@@ -33,54 +33,45 @@ public class Controller{
     @FXML
     public void initialize(){
         if(model != null) {
+            ime.textProperty().bindBidirectional(model.getTrenutniKorisnik().imeProperty());
+            prezime.textProperty().bindBidirectional(model.getTrenutniKorisnik().prezimeProperty());
+            email.textProperty().bindBidirectional(model.getTrenutniKorisnik().emailProperty());
+            lozinka.textProperty().bindBidirectional(model.getTrenutniKorisnik().passwordProperty());
+            korIme.textProperty().bindBidirectional(model.getTrenutniKorisnik().korisnickoImeProperty());
+
             for (Korisnik korisnik : model.getKorisnici())
                 lista.getItems().add(korisnik);
-            ime.setText(model.getTrenutniKorisnik().getIme());
-            prezime.setText(model.getTrenutniKorisnik().getPrezime());
-            email.setText(model.getTrenutniKorisnik().getEmail());
-            korIme.setText(model.getTrenutniKorisnik().getKorisnickoIme());
-            lozinka.setText(model.getTrenutniKorisnik().getPassword());
         }
 
         lista.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldKorisnik, newKorisnik) -> {
                     System.out.println(newKorisnik.toString());
                     model.setTrenutniKorisnik(newKorisnik);
-                    lista.refresh();
-                    ime.setText(model.getTrenutniKorisnik().getIme());
-                    prezime.setText(model.getTrenutniKorisnik().getPrezime());
-                    email.setText(model.getTrenutniKorisnik().getEmail());
-                    korIme.setText(model.getTrenutniKorisnik().getKorisnickoIme());
-                    lozinka.setText(model.getTrenutniKorisnik().getPassword());
                 }
         );
-
+        model.trenutniKorisnikProperty().addListener(
+                (obs, oldKorisnik, newKorisnik) -> {
+                    ime.textProperty().unbindBidirectional(oldKorisnik.imeProperty());
+                    ime.textProperty().bindBidirectional(newKorisnik.imeProperty());
+                    prezime.textProperty().unbindBidirectional(oldKorisnik.prezimeProperty());
+                    prezime.textProperty().bindBidirectional(newKorisnik.prezimeProperty());
+                    email.textProperty().unbindBidirectional(oldKorisnik.emailProperty());
+                    email.textProperty().bindBidirectional(newKorisnik.emailProperty());
+                    lozinka.textProperty().unbindBidirectional(oldKorisnik.passwordProperty());
+                    lozinka.textProperty().bindBidirectional(newKorisnik.passwordProperty());
+                    korIme.textProperty().unbindBidirectional(oldKorisnik.korisnickoImeProperty());
+                    korIme.textProperty().bindBidirectional(newKorisnik.korisnickoImeProperty());
+                }
+        );
         ime.textProperty().addListener(
                 (obs, staroIme, novoIme) -> {
-                    model.getTrenutniKorisnik().setIme(novoIme);
                     lista.refresh();
                 }
         );
 
         prezime.textProperty().addListener(
                 (obs, staroPrezime, novoPrezime) -> {
-                    model.getTrenutniKorisnik().setPrezime(novoPrezime);
                     lista.refresh();
-                }
-        );
-        email.textProperty().addListener(
-                (obs, staro, novo) -> {
-                    model.getTrenutniKorisnik().setEmail(novo);
-                }
-        );
-        lozinka.textProperty().addListener(
-                (obs, staro, novo) -> {
-                    model.getTrenutniKorisnik().setPassword(novo);
-                }
-        );
-        korIme.textProperty().addListener(
-                (obs, staro, novo) -> {
-                    model.getTrenutniKorisnik().setKorisnickoIme(novo);
                 }
         );
 
