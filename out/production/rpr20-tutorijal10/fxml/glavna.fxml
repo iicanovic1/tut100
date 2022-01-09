@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:controller="ba.unsa.etf.rpr.GlavnaController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <TableView fx:id="tableViewGradovi" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="colGradId" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="colGradNaziv" prefWidth="108.0" text="Naziv" />
+            <TableColumn fx:id="colGradStanovnika" prefWidth="121.0" text="Stanovnika" />
+            <TableColumn fx:id="colGradDrzava" prefWidth="130.0" text="Država" />
+        </columns>
+      </TableView>
+   </center>
+   <right>
+      <GridPane prefHeight="400.0" prefWidth="131.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="70.0" minHeight="0.0" prefHeight="33.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="154.0" minHeight="0.0" prefHeight="33.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="215.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="210.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="251.0" minHeight="0.0" prefHeight="244.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="btnDodajGrad" mnemonicParsing="false" onAction="#dodajGrad" prefHeight="30.0" prefWidth="138.0" text="Dodaj grad" />
+            <Button fx:id="btnDodajDrzavu" mnemonicParsing="false" onAction="#dodajDrzavu" prefHeight="30.0" prefWidth="143.0" text="Dodaj državu" GridPane.rowIndex="1" />
+            <Button fx:id="btnIzmijeniGrad" mnemonicParsing="false" onAction="#izmijeniGrad" prefHeight="30.0" prefWidth="136.0" text="Izmijeni grad" GridPane.rowIndex="2" />
+            <Button fx:id="btnObrisiGrad" mnemonicParsing="false" onAction="#obrisiGrad" prefHeight="30.0" prefWidth="137.0" text="Obriši grad" GridPane.rowIndex="3" />
+         </children>
+         <BorderPane.margin>
+            <Insets left="10.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </right>
+</BorderPane>

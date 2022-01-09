@@ -14,7 +14,7 @@ public class GeografijaDAO {
     private  Connection conn;
     private PreparedStatement upitGradovi,upitNadjiDrzavu,upitNadjiGrad,upitNadjiGradNaziv
             ,brisiGradove,brisiDrzavu,upitDodajGrad,upitNadjiDrzavuID,
-            upitNabaviMAXIDGrad,upitNabaviMAXIDDrzava,upitDodajDrzavu,upitUpdateGrad,upitNadjiGradID;
+            upitNabaviMAXIDGrad,upitNabaviMAXIDDrzava,upitDodajDrzavu,upitUpdateGrad,upitNadjiGradID,upitDrzave;
 
     public static GeografijaDAO getInstance(){
         if (instance == null) instance = new GeografijaDAO();
@@ -25,6 +25,7 @@ public class GeografijaDAO {
         try{
             conn = DriverManager.getConnection(url);
             upitGradovi = conn.prepareStatement("SELECT * FROM grad");
+            upitDrzave = conn.prepareStatement("SELECT * FROM drzava");
             upitNadjiDrzavu = conn.prepareStatement("SELECT * FROM drzava WHERE naziv=?");
             upitNadjiGradNaziv = conn.prepareStatement("SELECT * FROM grad WHERE naziv=?");
             upitNadjiGradID = conn.prepareStatement("SELECT * FROM grad WHERE id=?");
@@ -53,6 +54,7 @@ public class GeografijaDAO {
                 upitDodajDrzavu = conn.prepareStatement("INSERT INTO drzava VALUES (?,?,?)");
                 upitNabaviMAXIDGrad = conn.prepareStatement("SELECT MAX(id)+1 FROM grad");
                 upitNabaviMAXIDDrzava = conn.prepareStatement("SELECT MAX(id)+1 FROM drzava");
+                upitDrzave = conn.prepareStatement("SELECT * FROM drzava");
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -105,7 +107,22 @@ public class GeografijaDAO {
         }
     }
 
-  
+    public ArrayList<Drzava> drzave(){
+        ArrayList<Drzava> drzaveLista = new ArrayList<>();
+        try {
+            ResultSet rs = upitDrzave.executeQuery();
+            while(rs.next()){
+                Drzava novi = new Drzava(rs.getInt(1),rs.getString(2),
+                        rs.getInt(3));
+                novi.setGlavniGrad(nadjiGradID(rs.getInt(3)));
+                drzaveLista.add(novi);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Collections.sort(drzaveLista, Comparator.comparing(Drzava::getId).reversed());
+        return drzaveLista;
+    }
 
     public ArrayList<Grad> gradovi(){
         ArrayList<Grad> gradovi = new ArrayList<>();
