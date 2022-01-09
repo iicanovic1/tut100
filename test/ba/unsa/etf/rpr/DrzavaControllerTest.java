@@ -1,3 +1,4 @@
+/*
 package ba.unsa.etf.rpr;
 
 import javafx.fxml.FXMLLoader;
@@ -63,3 +64,5 @@ class DrzavaControllerTest {
         assertFalse(theStage.isShowing());
     }
 }
+
+ */
