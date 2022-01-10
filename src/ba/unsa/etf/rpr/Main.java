@@ -22,6 +22,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/glavna.fxml"));
+        GlavnaController controler = new GlavnaController();
+        loader.setController(controler);
         Parent root = loader.load();
         primaryStage.setTitle("Gradovi i države");
         primaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));

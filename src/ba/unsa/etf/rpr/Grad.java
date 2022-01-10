@@ -17,6 +17,11 @@ public class Grad {
     private SimpleIntegerProperty brojStanovnikaProperty;
     private SimpleObjectProperty<Drzava> drzavaProperty;
 
+    @Override
+    public String toString() {
+        return naziv;
+    }
+
     public int getIdProperty() {
         return idProperty.get();
     }

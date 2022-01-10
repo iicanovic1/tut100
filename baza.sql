@@ -10,7 +10,7 @@ FOREIGN KEY (drzava) REFERENCES drzava(id)
 CREATE TABLE IF NOT EXISTS "drzava" (
 "id" INTEGER,
 "naziv" TEXT,
-"glani_grad" INTEGER,
+"glavni_grad" INTEGER,
 PRIMARY KEY("id"),
 FOREIGN KEY (glavni_grad) REFERENCES grad(id)
 );

@@ -14,7 +14,7 @@ public class GeografijaDAO {
     private  Connection conn;
     private PreparedStatement upitGradovi,upitNadjiDrzavu,upitNadjiGrad,upitNadjiGradNaziv
             ,brisiGradove,brisiDrzavu,upitDodajGrad,upitNadjiDrzavuID,
-            upitNabaviMAXIDGrad,upitNabaviMAXIDDrzava,upitDodajDrzavu,upitUpdateGrad,upitNadjiGradID,upitDrzave;
+            upitNabaviMAXIDGrad,upitNabaviMAXIDDrzava,upitDodajDrzavu,upitUpdateGrad,upitNadjiGradID,upitDrzave,upitUpdateDrzava;
 
     public static GeografijaDAO getInstance(){
         if (instance == null) instance = new GeografijaDAO();
@@ -25,39 +25,27 @@ public class GeografijaDAO {
         try{
             conn = DriverManager.getConnection(url);
             upitGradovi = conn.prepareStatement("SELECT * FROM grad");
-            upitDrzave = conn.prepareStatement("SELECT * FROM drzava");
+        }catch(SQLException e) {
+            kreirajBazu();
+        }
+        try {
+            upitGradovi = conn.prepareStatement("SELECT * FROM grad");
             upitNadjiDrzavu = conn.prepareStatement("SELECT * FROM drzava WHERE naziv=?");
             upitNadjiGradNaziv = conn.prepareStatement("SELECT * FROM grad WHERE naziv=?");
             upitNadjiGradID = conn.prepareStatement("SELECT * FROM grad WHERE id=?");
             upitNadjiDrzavuID = conn.prepareStatement("SELECT * FROM drzava WHERE id=?");
             upitNadjiGrad = conn.prepareStatement("SELECT * FROM grad WHERE id=?");
             brisiGradove = conn.prepareStatement("DELETE FROM grad WHERE drzava=?");
-            upitUpdateGrad = conn.prepareStatement("UPDATE grad SET naziv=?,broj_stanovnika=? WHERE id=?");
+            upitUpdateGrad = conn.prepareStatement("UPDATE grad SET naziv=?,broj_stanovnika=?,drzava=? WHERE id=?");
+            upitUpdateDrzava = conn.prepareStatement("UPDATE drzava SET glavni_grad=? WHERE id=?");
             brisiDrzavu = conn.prepareStatement("DELETE FROM drzava WHERE id=?");
             upitDodajGrad = conn.prepareStatement("INSERT INTO grad VALUES (?,?,?,?)");
             upitDodajDrzavu = conn.prepareStatement("INSERT INTO drzava VALUES (?,?,?)");
             upitNabaviMAXIDGrad = conn.prepareStatement("SELECT MAX(id)+1 FROM grad");
             upitNabaviMAXIDDrzava = conn.prepareStatement("SELECT MAX(id)+1 FROM drzava");
-        }catch(SQLException e) {
-            kreirajBazu();
-            try {
-                upitGradovi = conn.prepareStatement("SELECT * FROM grad");
-                upitNadjiDrzavu = conn.prepareStatement("SELECT * FROM drzava WHERE naziv=?");
-                upitNadjiGradNaziv = conn.prepareStatement("SELECT * FROM grad WHERE naziv=?");
-                upitNadjiGradID = conn.prepareStatement("SELECT * FROM grad WHERE id=?");
-                upitNadjiDrzavuID = conn.prepareStatement("SELECT * FROM drzava WHERE id=?");
-                upitNadjiGrad = conn.prepareStatement("SELECT * FROM grad WHERE id=?");
-                brisiGradove = conn.prepareStatement("DELETE FROM grad WHERE drzava=?");
-                upitUpdateGrad = conn.prepareStatement("UPDATE grad SET naziv=?,broj_stanovnika=? WHERE id=?");
-                brisiDrzavu = conn.prepareStatement("DELETE FROM drzava WHERE id=?");
-                upitDodajGrad = conn.prepareStatement("INSERT INTO grad VALUES (?,?,?,?)");
-                upitDodajDrzavu = conn.prepareStatement("INSERT INTO drzava VALUES (?,?,?)");
-                upitNabaviMAXIDGrad = conn.prepareStatement("SELECT MAX(id)+1 FROM grad");
-                upitNabaviMAXIDDrzava = conn.prepareStatement("SELECT MAX(id)+1 FROM drzava");
-                upitDrzave = conn.prepareStatement("SELECT * FROM drzava");
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            upitDrzave = conn.prepareStatement("SELECT * FROM drzava");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -272,7 +260,7 @@ public class GeografijaDAO {
                 upitDodajDrzavu.setInt(1,drzava.getId());
                 upitDodajDrzavu.setString(2,drzava.getNaziv());
                 ResultSet rs1 = upitNabaviMAXIDGrad.executeQuery();
-                upitDodajDrzavu.setInt(3, rs1.getInt(1)-1);
+                upitDodajDrzavu.setInt(3, drzava.getIdGlavniGrad());
                 upitDodajDrzavu.executeUpdate();
             }
         } catch (SQLException e) {
@@ -290,7 +278,20 @@ public class GeografijaDAO {
             upitUpdateGrad.setString(1,poslani.getNaziv());
             upitUpdateGrad.setInt(2,poslani.getBrojStanovnika());
             upitUpdateGrad.setInt(3,grad.getId());
+
+            upitNadjiDrzavu.setString(1,poslani.getDrzava().getNaziv());
+            ResultSet rs = upitNadjiDrzavu.executeQuery();
+            int id = 0;
+            if(rs.next()){
+                id = rs.getInt(1);
+                upitUpdateDrzava.setInt(1,grad.getId());
+                upitUpdateDrzava.setInt(2,id);
+                upitUpdateDrzava.executeUpdate();
+            }
+
+            upitUpdateGrad.setInt(4,id);
             upitUpdateGrad.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

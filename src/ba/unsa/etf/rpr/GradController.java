@@ -13,12 +13,16 @@ public class GradController {
     public TextField fieldNaziv;
     Boolean  validacija = false;
 
-    public DrzaveModel drzaveModel;
+    public DrzaveModel drzaveModel = new DrzaveModel();
     public ChoiceBox<Drzava> choiceDrzava;
     public Grad grad;
     public Drzava drzava = new Drzava();
 
-    public GradController(DrzaveModel drzaveModel,Grad grad) {
+    public GradController(Grad grad,ArrayList<Drzava> drzave) {
+        this.drzaveModel.dodajDrzave(drzave);
+        this.grad = grad;
+    }
+    public GradController(Grad grad,DrzaveModel drzaveModel) {
         this.drzaveModel = drzaveModel;
         this.grad = grad;
     }
@@ -26,17 +30,21 @@ public class GradController {
     @FXML
     public void initialize() {
         choiceDrzava.getItems().addAll(drzaveModel.getDrzave());
-        fieldNaziv.getStyleClass().add("poljeNijeIspravno");
-        fieldBrojStanovnika.getStyleClass().add("poljeNijeIspravno");
-        if(grad.getDrzava() != null) {
+
+        if(grad != null && grad.getDrzava() != null) {
                 fieldNaziv.textProperty().setValue(grad.getNaziv());
                 fieldBrojStanovnika.textProperty().setValue(String.valueOf(grad.getBrojStanovnika()));
                 choiceDrzava.setValue(grad.getDrzava());
                 drzava = grad.getDrzava();
+                fieldNaziv.getStyleClass().add("poljeIspravno");
+                fieldBrojStanovnika.getStyleClass().add("poljeIspravno");
+                validacija = true;
             }
         else if(drzaveModel.getDrzave().size() != 0) {
             drzava = drzaveModel.getDrzave().get(0);
             choiceDrzava.setValue(drzaveModel.getDrzave().get(0));
+            fieldNaziv.getStyleClass().add("poljeNijeIspravno");
+            fieldBrojStanovnika.getStyleClass().add("poljeNijeIspravno");
         }
 
 
@@ -87,13 +95,20 @@ public class GradController {
     }
 
     public void okAkcija(ActionEvent actionEvent) {
-        if(validacija == false)
+        if(validacija == false )
             return;
+
+        if(grad == null) grad = new Grad();
         grad.setNaziv(fieldNaziv.textProperty().getValue());
         grad.setDrzava(drzava);
         grad.setIdDrzave(grad.getDrzava().getId());
         grad.setBrojStanovnika(Integer.parseInt(fieldBrojStanovnika.textProperty().getValue()));
+
         Stage stage = (Stage) fieldBrojStanovnika.getScene().getWindow();
         stage.close();
+    }
+
+    public Grad getGrad() {
+        return grad;
     }
 }

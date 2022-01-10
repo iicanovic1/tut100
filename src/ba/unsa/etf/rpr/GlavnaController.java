@@ -61,7 +61,7 @@ public class GlavnaController {
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/grad.fxml"));
         Grad dodajGrad = new Grad();
-        GradController controler = new GradController(drzaveModel,dodajGrad);
+        GradController controler = new GradController(dodajGrad,drzaveModel);
         loader.setController(controler);
         Parent root = loader.load();
         stage.setTitle("Dodavanje grada");
@@ -81,11 +81,24 @@ public class GlavnaController {
     public void dodajDrzavu(ActionEvent actionEvent) throws IOException {
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/drzava.fxml"));
+        Drzava dodajDrzavu = new Drzava();
+        DrzavaController controler = new DrzavaController(dodajDrzavu,gradoviModel);
+        loader.setController(controler);
         Parent root = loader.load();
         stage.setTitle("Dodavanje drzave");
         stage.setScene(new Scene(root,USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
         stage.toFront();
         stage.show();
+        stage.setOnHiding(e -> {
+            if(dodajDrzavu.getGlavniGrad() != null)
+            {
+                dao.dodajDrzavu(dodajDrzavu);
+                dodajDrzavu.getGlavniGrad().setDrzava( dao.nadjiDrzavu(dodajDrzavu.getNaziv()));
+                dao.izmijeniGrad(dodajDrzavu.getGlavniGrad());
+                prikaziTabelu();
+            }
+            else return;
+        });
     }
 
     public void izmijeniGrad(ActionEvent actionEvent)throws IOException  {
@@ -93,7 +106,7 @@ public class GlavnaController {
             return;
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/grad.fxml"));
-        GradController controler = new GradController(drzaveModel,grad);
+        GradController controler = new GradController(grad,drzaveModel);
         loader.setController(controler);
         Parent root = loader.load();
         stage.setTitle("Izmjena grada");
